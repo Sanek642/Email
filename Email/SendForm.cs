@@ -21,6 +21,8 @@ namespace Email
         List<Emailtb> mail;
         DateTime date;
 
+        string spath = Application.StartupPath + @"IMG";
+
         string login;
         string pass;
         string smtp;
@@ -55,7 +57,7 @@ namespace Email
         {
             try
             {
-
+                
                 //Собираем выборку писем в зависимости отвыбранного сервера
 
                 login = textBox1.Text;
@@ -157,8 +159,7 @@ namespace Email
 
                         catch (Exception ex)
                         {
-                            Emailtb.MessegeOk(ex.Message);
-                            continue;
+                            richTextBox1.AppendText(t.Fio + " " + t.Email + " " + date + ex.Message +"\n");
                         }
                     }
 
@@ -197,5 +198,34 @@ namespace Email
             //with a URL:
             Process.Start("explorer.exe", "https://htmled.it");
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = "c:\\";
+                openFileDialog.Filter = "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        //Выбор файла пользователем
+                        var filePath = openFileDialog.FileName;
+                        FileInfo file = new FileInfo(filePath);
+
+                        File.Copy(filePath, spath + "\\" + file.Name, true);
+                    }
+                    catch(Exception ex)
+                    {
+                        Emailtb.MessegeOk(ex.Message);
+                    }
+                }
+            }
+        }
+            
     }
 }
